@@ -56,8 +56,8 @@ def _post(path: str, body: dict, idempotency_key: str | None = None) -> dict:
     raise RuntimeError("Rate-limit retry attempts exhausted")
 
 
-def _publish(payload: dict, idempotency_key: str) -> dict:
-    return _post("/v1/queue/publish", {"payload": payload}, idempotency_key)
+def _publish(queue: str, payload: dict, idempotency_key: str) -> dict:
+    return _post("/v1/queue/publish", {"queue": queue, "payload": payload}, idempotency_key)
 
 
 # A small namespace keeps the call site readable: infrai.queue.publish(...).

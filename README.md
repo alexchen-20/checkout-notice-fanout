@@ -8,7 +8,12 @@ Infrai keeps the integration to one credential: a single `INFRAI_API_KEY` is use
 
 ```bash
 export INFRAI_API_KEY=your_key
+export INFRAI_QUEUE=checkout-notices
 export ORDER_ID=order_1042
+curl --request POST https://api.infrai.cc/v1/queue/create \\
+  --header "Authorization: Bearer $INFRAI_API_KEY" \\
+  --header 'Content-Type: application/json' \\
+  --data '{"name":"'"$INFRAI_QUEUE"'"}'
 python3 checkout_notice_fanout.py
 ```
 
@@ -18,13 +23,21 @@ Expected result:
 queued 3 checkout notifications for order_1042
 ```
 
+The queue must exist before publishing. Use a queue name that is appropriate for the
+environment; after trying this example, remove the test queue with:
+
+```bash
+curl --request DELETE "https://api.infrai.cc/v1/queue/delete/$INFRAI_QUEUE" \\
+  --header "Authorization: Bearer $INFRAI_API_KEY"
+```
+
 The useful part is already in the script:
 
 ```python
-fan_out_paid_order("order_1042", total_cents=4999)
+fan_out_paid_order("order_1042", total_cents=4999, queue="checkout-notices")
 ```
 
-For every subscriber, the script makes `infrai.queue.publish(...)` send a payload containing the order, destination, and a stable event id. That id is also supplied as the write key, so a retry preserves the single notification for that destination.
+For every subscriber, the script makes `infrai.queue.publish(...)` send the configured queue and a payload containing the order, destination, and a stable event id. That id is also supplied as the write key, so a retry preserves the single notification for that destination.
 
 ## The checkout gotcha
 

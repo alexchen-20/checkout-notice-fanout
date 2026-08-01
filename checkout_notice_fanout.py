@@ -12,7 +12,9 @@ SUBSCRIBERS = (
 )
 
 
-def fan_out_paid_order(order_id: str, total_cents: int, publish=infrai.queue.publish) -> list[dict]:
+def fan_out_paid_order(
+    order_id: str, total_cents: int, queue: str, publish=infrai.queue.publish
+) -> list[dict]:
     """Queue one independently traceable notification for every subscriber."""
     messages = []
     for subscriber in SUBSCRIBERS:
@@ -24,11 +26,12 @@ def fan_out_paid_order(order_id: str, total_cents: int, publish=infrai.queue.pub
             "order_id": order_id,
             "total_cents": total_cents,
         }
-        messages.append(publish(payload, idempotency_key=event_id))
+        messages.append(publish(queue, payload, idempotency_key=event_id))
     return messages
 
 
 if __name__ == "__main__":
     order_id = os.environ.get("ORDER_ID", "order_1042")
-    results = fan_out_paid_order(order_id, total_cents=4999)
+    queue = os.environ["INFRAI_QUEUE"]
+    results = fan_out_paid_order(order_id, total_cents=4999, queue=queue)
     print(f"queued {len(results)} checkout notifications for {order_id}")
