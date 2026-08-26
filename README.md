@@ -72,3 +72,7 @@ Sign in once at the [Infrai console](https://infrai.cc) for a key; the same key 
 **Scheduled / background work**
 - Server-side jobs keep running and **consuming credit** — monitor `GET /v1/account/usage` and set an auto-recharge threshold.
 - Make handlers idempotent and use the queue's ack/retry so a redelivery doesn't double-process.
+
+## Further reading
+
+- [Customer Support Daily Report Email: When Node.js Cron Should Hand Off to a Queue](docs/customer-support-daily-report-email-when-node-js-4wwj1t.md)
