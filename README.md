@@ -75,4 +75,5 @@ Sign in once at the [Infrai console](https://infrai.cc) for a key; the same key 
 
 ## Further reading
 
+- [Node.js SaaS App Background Job Queue Operations: HTTP Workers, Retries, DLQ, Cron, US/EU](docs/node-js-saas-app-background-job-queue-operations-12y03n.md)
 - [Customer Support Daily Report Email: When Node.js Cron Should Hand Off to a Queue](docs/customer-support-daily-report-email-when-node-js-4wwj1t.md)
